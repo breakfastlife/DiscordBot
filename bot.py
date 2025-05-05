@@ -37,12 +37,12 @@ async def on_ready():
   except:
     print('Could not connect to Discord.')
 
-
+'''
 #Test Commands
 @bot.command()
 async def test(ctx, title):
     test = find_music_by_title(title)
-
+'''
 @bot.command()
 async def pause(ctx):
   #check if music is playing
@@ -168,13 +168,6 @@ async def skip(ctx):
   else:
     await ctx.send("End of song Queue! Good bye!") 
     await leave(ctx)
-
-'''    
-@bot.command()
-async def add_to_queue(ctx, title):
-  play_list.put(title)
-  await ctx.send(f"{play_list.qsize()} songs in the queue!") 
-'''
 
 @bot.command()
 async def add_to_queue(ctx, title):
