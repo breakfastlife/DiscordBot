@@ -55,9 +55,7 @@ def find_music_name():
 
 #find music by title
 def find_music_by_title(song):
-    print(f'Finidng sog by title: {song}')
-    print(str(os.listdir("music")[0]))
-    return (str(os.listdir("music")[0]))
+    return song + ".m4a"
 
 #remove all in the queue (directory)
 def remove_all_files(dir):
@@ -69,7 +67,7 @@ def delete_selected_file(name):
     #directory = f"C:\\Users\\Bryce\\PythonProjects\\DiscordBot\\music\\{name}"
     current_dir = os.path.dirname(os.path.abspath(__file__))
     music_dir = current_dir + "\\music\\" + name
-    print(music_dir)
+    #print(music_dir)
     try:
         os.remove(music_dir)
     except Exception as e:
