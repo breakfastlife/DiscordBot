@@ -14,6 +14,7 @@ from tube import give_link,download_vid,find_music_name,remove_all_files,delete_
 import os
 from dotenv import load_dotenv
 import queue
+import copy
 
 #ENV Variables
 
@@ -27,6 +28,7 @@ intents.message_content = True
 ### Bot and its Commands
 bot = commands.Bot(command_prefix = "$", help_command=None, intents = intents) 
 play_list = queue.Queue()
+current_downloads = 0
 
 @bot.event
 async def on_ready():
@@ -115,61 +117,110 @@ async def join(context):
   else:
     #if you are not in vc
     await context.send("[-] An Error occured: You have to be in a voice channel to run this command") 
-
+    
 @bot.command(name="play")
 async def play(ctx, *, title):
+  global current_downloads
+  # if you are not in vc
+  if not ctx.voice_client:
+    #connect to vc
+    print('Joining chat.')
+    await join(ctx)
+  if(current_downloads < 5):  
+    download_vid(title)
+    current_downloads += 1
+  #check if playing in voice chat
+  if ctx.voice_client.is_playing():
+    await add_to_queue(ctx, title)
+  else:
+    await play_song(ctx)
+
+async def play_song(ctx):
+  global current_downloads
   #voice_channel = ctx.author.voice.channel
   # if you are not in vc
   if not ctx.voice_client:
     #connect to vc
     print('Joining chat.')
     await join(ctx)
-  #downloading the mp4 of the desired vid
-  if ctx.voice_client.is_playing():
-    await add_to_queue(ctx, title)
-  else:
-    download_vid(title)
-    try:
-      async with ctx.typing():
-        #executable part is where we downloaded ffmpeg. 
-        #find_music_name func because we want to bot to play our desired song from the folder
-        player = discord.FFmpegPCMAudio(executable="C:\\ffmpeg\\bin\\ffmpeg.exe",source=f"music/{find_music_name()}")
-        ctx.voice_client.play(player, after=lambda e: print('Player error: %s" %e') if e else None)
-      #send confirmation
-      await ctx.send(f'Now playing: {find_music_name()}')
-      while ctx.voice_client.is_playing():
-        await asyncio.sleep(1)
-      #delete the file after finished playing
-      delete_selected_file(find_music_name())
-      if not play_list.empty():
-        song = play_list.get()
-        print(song)
-        await play(ctx, title=song)
-      
-    except Exception as e :
-      #sending error 
-      #await ctx.send(f'Error: {e}') 
-      print(f"Error: {e}")
+  if current_downloads == 0:
+    download_queue(play_list)
+  try:
+    async with ctx.typing():
+      #executable part is where we downloaded ffmpeg. 
+      #find_music_name func because we want to bot to play our desired song from the folder
+      player = discord.FFmpegPCMAudio(executable="C:\\ffmpeg\\bin\\ffmpeg.exe",source=f"music/{find_music_name()}")
+      ctx.voice_client.play(player, after=lambda e: print('Player error: %s" %e') if e else None)
+    #send confirmation
+    await ctx.send(f'Now playing: {find_music_name()}')
+    #remove 1 from current downloads
+    current_downloads -= 1
+    if current_downloads < 5 and play_list.qsize() > 4:
+      download_from_range(play_list)
+    while ctx.voice_client.is_playing():
+      await asyncio.sleep(1)
+    #delete the file after finished playing
+    delete_selected_file(find_music_name())
+    #TODO fix the way this goes to the next song. 
+    if not play_list.empty():
+      song = play_list.get()
+      print(song)
+      await play_song(ctx)
+    
+  except Exception as e :
+    #sending error 
+    #await ctx.send(f'Error: {e}') 
+    print(f"Error: {e}")
 
 async def play_from_queue(ctx):
   if not play_list.empty():
-    play(play_list.get())
+    await play_song(ctx)
   else:
     await ctx.send("End of song Queue! Good bye!") 
     leave()
+    
+async def download_queue():
+  play_list_copy = copy.deepcopy(play_list)
+  for i in range(5):
+    if play_list_copy.empty():
+      break
+    download_vid(play_list_copy.get())
+    current_downloads += 1
+    
+async def download_from_range():
+  #copy queue and convert to list
+  play_list_copy = list(copy.deepcopy(play_list).queue)
+  print(play_list_copy)
+  #loop thorugh list to specific range ot download to specified amount
+  if(play_list_copy.count > 4):
+    for song in range[5]:
+      print(song)
+      if(song > current_downloads - 1):
+        download_vid(play_list_copy[song])
+        current_downloads += 1
 
 @bot.command()
 async def skip(ctx):
   if not play_list.empty():
-    await ctx.voice_client.stop()
-    play(play_list.get())
+    ctx.voice_client.stop()
+    await play_song(ctx)
   else:
     await ctx.send("End of song Queue! Good bye!") 
     await leave(ctx)
-    
+
+'''    
 @bot.command()
 async def add_to_queue(ctx, title):
   play_list.put(title)
+  await ctx.send(f"{play_list.qsize()} songs in the queue!") 
+'''
+
+@bot.command()
+async def add_to_queue(ctx, title):
+  global current_downloads
+  play_list.put(title)
+  download_vid(title)
+  current_downloads += 1
   await ctx.send(f"{play_list.qsize()} songs in the queue!") 
   
 @bot.command()
