@@ -39,31 +39,10 @@ async def on_ready():
     print('Could not connect to Discord.')
 
 
-''' Test Commands
+#Test Commands
 @bot.command()
 async def test(ctx):
-    voice_channel = ctx.author.voice.channel
-    print(voice_channel)
-    voice_channel = await voice_channel.connect()
-
-@bot.command()
-async def pl_test(ctx):
-  print('Trying to get the voice channel the author is in.')
-  voice_channel = ctx.author.voice.channel
-  print(f'Author channel is: {voice_channel}')
-  # if you are not in vc
-  if not ctx.voice_client:
-    #connect to vc
-    print('Trying to connect to vc!')
-    voice_channel = await voice_channel.connect()
-  try:
-    print('Trying the play test.')
-    play_test()
-  except Exception as e :
-    #sending error 
-    await ctx.send(f'Error: {e}') 
-    
-'''
+    test = find_music_name()
 
 @bot.command()
 async def pause(ctx):

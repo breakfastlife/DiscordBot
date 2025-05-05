@@ -21,8 +21,11 @@ def download_vid(name):
     #put the link into youtube
     yt = YouTube(base_url)
     #gets a list of audio, but we choose to use the first result instead in mp4.
+    yt.title = name
     audio_stream = yt.streams.filter(only_audio=True, file_extension="mp4").first() #only download the first result
     audio_stream.download(output_path="music") # we are deciding where we want to install
+
+    print(yt.title + " has been successfully downloaded.")
     
 '''
 def play_test():
@@ -47,6 +50,12 @@ def delete_audio():
 
 #find the first files in the directory "music"
 def find_music_name():
+    print(str(os.listdir("music")[0]))
+    return (str(os.listdir("music")[0]))
+
+#find music by title
+def find_music_by_title(song):
+    print(f'Finidng sog by title: {song}')
     print(str(os.listdir("music")[0]))
     return (str(os.listdir("music")[0]))
 
