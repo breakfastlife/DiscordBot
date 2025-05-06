@@ -35,8 +35,8 @@ Currently, it works by downloading the songs from the queue as they go. The issu
 
 This new build should have the following:
 1. Ability to queue and download ✅
-2. take playlists but only download a section of them to keep down on space.
-   a. I figured out there is seperate functions for song and playlist.
-   b. This means that the song function breaks if you accidently put a playlist in, so I need to figure out how to differentiate between the two. 
-4. figure out how environment secrets work through github.
+2. take playlists but only download a section of them to keep down on space.\
+   a. I figured out there is seperate functions for song and playlist.\
+   b. This means that the song function breaks if you accidently put a playlist in, so I need to figure out how to differentiate between the two.
+4. figure out how environment secrets work through github.\
    a. Still havent figured it out. Any help would be greatly apprectiated.
