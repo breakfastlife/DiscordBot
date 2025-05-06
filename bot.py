@@ -10,7 +10,7 @@ import json
 #import spotipy
 #from spotipy.oauth2 import SpotifyOAuth
 #import webbrowser
-from tube import give_link,download_vid,find_music_name,remove_all_files,delete_selected_file,find_music_by_title # pytube file
+from tube import download_vid,remove_all_files,delete_selected_file,find_music_by_title # pytube file
 import os
 from dotenv import load_dotenv
 import queue
@@ -123,7 +123,6 @@ async def play_song(ctx, title):
     async with ctx.typing():
       #executable part is where we downloaded ffmpeg. 
       #find_music_name func because we want to bot to play our desired song from the folder
-      #player = discord.FFmpegPCMAudio(executable="C:\\ffmpeg\\bin\\ffmpeg.exe",source=f"music/{find_music_name()}")
       player = discord.FFmpegPCMAudio(executable="C:\\ffmpeg\\bin\\ffmpeg.exe",source=f"music/{find_music_by_title(title)}")
       ctx.voice_client.play(player, after=lambda e: print('Player error: %s" %e') if e else None)
     #send confirmation
