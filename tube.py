@@ -1,5 +1,7 @@
 from pytubefix import Search
 from pytubefix import YouTube
+from pytubefix import Playlist
+from pytubefix.cli import on_progress
 import os
 import shutil #import libs
 import queue
@@ -26,19 +28,15 @@ def download_vid(name):
     audio_stream.download(output_path="music") # we are deciding where we want to install
 
     print(yt.title + " has been successfully downloaded.")
-    
-'''
-def play_test():
-    print('Playtest')
-    try:
-        YouTube('https://youtu.be/2lAe1cqCOXo').streams.first().download()
-        print('YouTube link downloaded')
-        yt = YouTube('http://youtube.com/watch?v=2lAe1cqCOXo')
-        print(f'yt = {yt}')
-        yt.streams.filter(only_audio=True, file_extension="mp4").first()
-    except Exception as e:
-        print(f"An error occurred: {e}")
-'''
+
+def playlist_titles(url):
+    pl = Playlist(url)
+    q = queue.Queue()
+    for video in pl.videos:
+        print(video.title)
+        q.put(video.title)
+    return q
+        
 
 def add_to_queue(name):
     print(f"Adding to {name} to the queue.")

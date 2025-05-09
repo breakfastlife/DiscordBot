@@ -10,7 +10,7 @@ import json
 #import spotipy
 #from spotipy.oauth2 import SpotifyOAuth
 #import webbrowser
-from tube import download_vid,remove_all_files,delete_selected_file,find_music_by_title # pytube file
+from tube import download_vid,remove_all_files,delete_selected_file,find_music_by_title,playlist_titles # pytube file
 import os
 from dotenv import load_dotenv
 import queue
@@ -20,6 +20,9 @@ import copy
 
 load_dotenv()
 disc_token = os.getenv('TOKEN')
+
+
+#Discord Intents
 
 intents = discord.Intents.all()
 intents.members = True
@@ -98,19 +101,24 @@ async def join(context):
     
 @bot.command(name="play")
 async def play(ctx, *, title):
-  global current_downloads
+  #global current_downloads
   # if you are not in vc
   if not ctx.voice_client:
     #connect to vc
     print('Joining chat.')
     await join(ctx)
+  if "playlist" in title:
+    await play_list(ctx, title)
+    exit
+  print(title)
   #check if playing in voice chat
   if ctx.voice_client.is_playing():
     await add_to_queue(ctx, title)
     download_vid(title)
   else:
-    await play_song(ctx, title)
     download_vid(title)
+    await play_song(ctx, title)
+    
 
 async def play_song(ctx, title):
   #voice_channel = ctx.author.voice.channel
@@ -134,8 +142,9 @@ async def play_song(ctx, title):
     #TODO fix the way this goes to the next song. 
     if not play_list.empty():
       song = play_list.get()
+      #await asyncio.sleep(10)
       print(song)
-      await play_song(ctx, song)
+      await play(ctx, title=song)
     else:
       await ctx.send("End of song Queue! Good bye!") 
       await leave(ctx)
@@ -145,6 +154,32 @@ async def play_song(ctx, title):
     #await ctx.send(f'Error: {e}') 
     print(f"Error: {e}")
 
+@bot.command()
+async def playlist(ctx, url):
+  q = playlist_titles(url)
+  print("Entering queueing loop.")
+  for songs in range(q.qsize()):
+    play_list.put(q.get())
+  print("Checking if in VC.")
+  if not ctx.voice_client:
+    #connect to vc
+    print('Joining chat.')
+    await join(ctx)
+  print("Checking if playing.")
+  await ctx.send(f"{play_list.qsize()} songs in the queue!") 
+  if not ctx.voice_client.is_playing():
+    print("Download video.")
+    song = play_list.get()
+    download_vid(song)
+    print("Play the song.")
+    await play_song(ctx, song)
+  
+
+def merge_queue(q):
+  while not q.empty():
+    #Get all in queue from other queue and put it in play_list queue
+    play_list.put(q.get())
+  
 async def play_from_queue(ctx):
   if not play_list.empty():
     await play_song(ctx, play_list.get())
