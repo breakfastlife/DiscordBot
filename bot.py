@@ -7,6 +7,7 @@ import logging
 import asyncio
 import requests
 import json
+from openai import OpenAI
 #import spotipy
 #from spotipy.oauth2 import SpotifyOAuth
 #import webbrowser
@@ -20,6 +21,8 @@ import copy
 
 load_dotenv()
 disc_token = os.getenv('TOKEN')
+api = os.getenv('API')
+client = OpenAI(api_key = api)
 
 
 #Discord Intents
@@ -214,6 +217,17 @@ async def meme(ctx):
   json_data = json.loads(response.text)
   #return json_data['url']
   await ctx.send(json_data['url'])  
+  
+@bot.command()
+async def ask(ctx, *, question):
+  response = client.completions.create(
+    model = 'gpt-3.5-turbo-instruct',
+    prompt = question,
+    max_tokens = 400,
+    temperature = 0.3
+  )
+  await ctx.send(response.choices[0].text) 
+
     
 bot.run(disc_token)
     
