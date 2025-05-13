@@ -30,6 +30,10 @@ $leave
 $meme
 ``` 
 ---- $meme will post a random meme
+```
+$ask "Prompt"
+```
+---- $ask will return an openai answer to the prompt given.
 
 Currently, it works by downloading the songs from the queue as they go. The issue with that is that its slow. If I can download the songs as I put them in the queue instead of right before they play, then it'll be much faster.
 
