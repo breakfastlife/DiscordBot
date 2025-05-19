@@ -62,6 +62,22 @@ Python libraries needed:
 8. copy
 9. pytubefix
 
+Configuration:
+1. Discord Token\
+   a. Go to https://discord.com/developers/docs/intro \
+   b. Login or Create an account \
+   c. Go to Applications -> New Application \
+   d. After you create it go to the Bot tab \
+   e. Add a bot \
+   f. Select Reset Token \
+   g. Copy the Token \
+   h. Open the Discordbot project on a code editor and create an .env file \
+   i. Create a variable names TOKEN and paste the token from discord \
+2. OpenAI Token\
+   a. Go to https://www.openai.com and sign up for an OpenAI account. \
+   b. After you've created an account, click on your profile picture on the top right, then click "View API keys" to access your API key. \
+   c. In the .env file create a variable named API and paste the the api token \
+
 <b>Run instructions</b>
 Run bot.py in python3 or terminal with:
 ```& <Python3 path> <path to bot file>/bot.py``` \
