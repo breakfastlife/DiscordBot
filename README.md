@@ -42,3 +42,27 @@ This new build should have the following:
 2. take playlists but only download a section of them to keep down on space.✅
 4. figure out how environment secrets work through github.\
    a. Still havent figured it out. Any help would be greatly apprectiated.
+
+<b>Install instructions:</b> \
+Program installs:\
+Install the following programs on the computer/server you intend to run the bot from
+1. You will need at least Python3
+2. You will need FFMPEG (this will be the audio player)\
+   a. Install here: https://ffmpeg.org/download.html#build-windows \
+   b. Install FFMPEG in C:\ffmpeg
+
+Python libraries needed:
+1. discord
+2. asyncio
+3. json
+4. requests
+5. openai
+6. dotenv
+7. queue
+8. copy
+9. pytubefix
+
+<b>Run instructions</b>
+Run bot.py in python3 or terminal with:
+```& <Python3 path> <path to bot file>/bot.py``` \
+for my environment its ```& C:/Python313/python.exe c:/Users/<personal stuff>/DiscordBot-1/bot.py```
