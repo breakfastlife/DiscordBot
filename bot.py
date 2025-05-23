@@ -3,7 +3,6 @@ import discord
 from discord import FFmpegPCMAudio
 from discord import FFmpegAudio
 from discord import FFmpegOpusAudio
-import logging
 import asyncio
 import requests
 import json
