@@ -41,7 +41,11 @@ This new build should have the following:
 1. Ability to queue and download ✅
 2. take playlists but only download a section of them to keep down on space.✅
 4. figure out how environment secrets work through github.\
-   a. Still havent figured it out. Any help would be greatly apprectiated.
+   a. Still havent figured it out. Any help would be greatly apprectiated.\
+5. Impliment OpenAI ✅\
+6. Ability to translate to Spanish\
+  a. Text\ ✅
+  b. Audio (Real Time)\ 
 
 <b>Install instructions:</b> \
 Program installs:\
