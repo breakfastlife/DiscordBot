@@ -6,6 +6,7 @@ from discord import FFmpegOpusAudio
 import asyncio
 import requests
 import json
+#import openai
 from openai import OpenAI
 #import spotipy
 #from spotipy.oauth2 import SpotifyOAuth
@@ -15,6 +16,8 @@ import os
 from dotenv import load_dotenv
 import queue
 import copy
+#import translate
+from translate import Translator
 
 #ENV Variables
 
@@ -222,10 +225,16 @@ async def ask(ctx, *, question):
   response = client.completions.create(
     model = 'gpt-3.5-turbo-instruct',
     prompt = question,
-    max_tokens = 400,
+    max_tokens = 300,
     temperature = 0.3
   )
   await ctx.send(response.choices[0].text) 
+  
+@bot.command()
+async def tospanish(ctx, *, text):
+  translator = Translator(to_lang='es')
+  translation = translator.translate(text)
+  await ctx.send(translation) 
 
     
 bot.run(disc_token)
