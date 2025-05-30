@@ -11,13 +11,14 @@ from openai import OpenAI
 #import spotipy
 #from spotipy.oauth2 import SpotifyOAuth
 #import webbrowser
-from tube import download_vid,remove_all_files,delete_selected_file,find_music_by_title,playlist_titles # pytube file
+from tube import download_vid,remove_all_files,delete_selected_file,find_music_by_title,playlist_titles,find_audio_by_title,downloadtranslation # pytube file
 import os
 from dotenv import load_dotenv
 import queue
 import copy
 #import translate
 from translate import Translator
+import datetime
 
 #ENV Variables
 
@@ -229,13 +230,47 @@ async def ask(ctx, *, question):
     temperature = 0.3
   )
   await ctx.send(response.choices[0].text) 
-  
+
+#Text to spanish and then spanish audio
 @bot.command()
 async def tospanish(ctx, *, text):
   translator = Translator(to_lang='es')
   translation = translator.translate(text)
-  await ctx.send(translation) 
+  print(translation)
+  await ctx.send(translation)
+  await translate_to_audio(ctx, text=translation)
 
+async def translate_to_audio(ctx, *, text):
+  time = datetime.datetime.now()
+  mp3_file = f'{time.strftime("%Y-%m-%d-%H-%M-%S")}_output.mp3'
+  downloadtranslation(mp3_file=mp3_file, trans=text)
+  await play_audio(ctx=ctx, path=mp3_file)
+
+async def play_audio(ctx, path):
+  if not ctx.voice_client:
+    #connect to vc
+    print('Joining chat.')
+    await join(ctx)
+  if ctx.voice_client.is_playing():
+    await ctx.send(f'Audio translation not available while Audio Activity is in use.')
+  else:
+    try:
+      async with ctx.typing():
+        #executable part is where we downloaded ffmpeg. 
+        #find_music_name func because we want to bot to play our desired song from the folder
+        player = discord.FFmpegPCMAudio(executable="C:\\ffmpeg\\bin\\ffmpeg.exe",source=f"{path}")
+        ctx.voice_client.play(player, after=lambda e: print('Player error: %s" %e') if e else None)
+      while ctx.voice_client.is_playing():
+        await asyncio.sleep(1)
+      #delete the file after finished playing
+      delete_selected_file(path)
+      await ctx.send("End of translation! Goodbye!\nFin de la traducción. ¡Adiós!") 
+      await leave(ctx)
+    
+    except Exception as e :
+      #sending error 
+      #await ctx.send(f'Error: {e}') 
+      print(f"Error: {e}")
     
 bot.run(disc_token)
     

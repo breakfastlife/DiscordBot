@@ -5,6 +5,7 @@ from pytubefix.cli import on_progress
 import os
 import shutil #import libs
 import queue
+from gtts import gTTS
 # We are finding the addresses of the vids that we want to find and then downloading them.
 
 #Finding the IDs for the videos we want to find
@@ -37,7 +38,6 @@ def playlist_titles(url):
         q.put(video.title)
     return q
         
-
 def add_to_queue(name):
     print(f"Adding to {name} to the queue.")
         
@@ -55,6 +55,10 @@ def find_music_name():
 def find_music_by_title(song):
     return song + ".m4a"
 
+#find downloaded translated audio
+def find_audio_by_title(text):
+    return text + ".mp3"
+
 #remove all in the queue (directory)
 def remove_all_files(dir):
     for file in os.listdir(dir):
@@ -70,3 +74,7 @@ def delete_selected_file(name):
         os.remove(music_dir)
     except Exception as e:
         print(e)
+
+def downloadtranslation(mp3_file, trans):
+  tts = gTTS(text=trans, lang='es', slow=False)
+  tts.save(mp3_file)
