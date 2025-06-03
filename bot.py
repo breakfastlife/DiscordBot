@@ -19,6 +19,7 @@ import copy
 #import translate
 from translate import Translator
 import datetime
+import speechrecognition as sr
 
 #ENV Variables
 

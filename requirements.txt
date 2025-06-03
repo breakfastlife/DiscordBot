@@ -1,4 +1,0 @@
-pytubefix
-openai
-discord
-dotenv
