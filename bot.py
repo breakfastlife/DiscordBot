@@ -11,7 +11,7 @@ from openai import OpenAI
 #import spotipy
 #from spotipy.oauth2 import SpotifyOAuth
 #import webbrowser
-from tube import download_vid,remove_all_files,delete_selected_file,find_music_by_title,playlist_titles,find_audio_by_title,downloadtranslation # pytube file
+from tube import download_vid,remove_all_files,delete_selected_file,find_music_by_title,playlist_titles,find_audio_by_title,downloadtranslation,dic # pytube file
 import os
 from dotenv import load_dotenv
 import queue
@@ -19,7 +19,7 @@ import copy
 #import translate
 from translate import Translator
 import datetime
-import speechrecognition as sr
+import speech_recognition as sr
 
 #ENV Variables
 
@@ -272,7 +272,9 @@ async def play_audio(ctx, path):
       #sending error 
       #await ctx.send(f'Error: {e}') 
       print(f"Error: {e}")
-    
+
+
+
 bot.run(disc_token)
     
 #client = MyClient(intents=intents)
